@@ -20,7 +20,7 @@ Filtreleme işlemlerini LINQ kullanarak fiyat, renk ve beden bazlı olacak şeki
 ⚙️ Öne Çıkan Noktalar
 
 * MVC pattern’in birebir uygulanm…
-[18:09, 23.01.2026] Sabri: 👗 Elbise Yönetim Sistemi
+ 👗 Elbise Yönetim Sistemi
 ASP.NET Core MVC 9.0 ile geliştirilmiş, modern ve şık bir elbise koleksiyonu yönetim uygulaması.
 
 ![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-9.0-purple)
@@ -58,7 +58,6 @@ ASP.NET Core MVC 9.0 ile geliştirilmiş, modern ve şık bir elbise koleksiyonu
 
 ### Backend
 - **ASP.NET Core MVC 9.0**
-- **C# 12.0**
 - **LINQ** - Veri sorgulama
 - **Razor Pages** - View engine
 

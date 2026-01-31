@@ -1,0 +1,488 @@
+@model List<Elbise>
+@{
+ Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elbise Listesi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #2d1b3d 0%, #4a2456 50%, #1f1228 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            color: #fff;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px 30px;
+            background: rgba(45, 27, 61, 0.6);
+            border-radius: 15px;
+            border: 1px solid #ff69b4;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff69b4;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+
+        .logo i {
+            font-size: 2.2rem;
+        }
+
+        .btn-add-new {
+            background: linear-gradient(135deg, #ff69b4 0%, #da70d6 100%);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+
+        .btn-add-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
+            color: #fff;
+        }
+
+        .filter-panel {
+            background: rgba(45, 27, 61, 0.8);
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-section {
+            margin-bottom: 25px;
+        }
+
+        .filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            color: #ff69b4;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 105, 180, 0.1);
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 105, 180, 0.2);
+            border-color: #ff69b4;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+            color: #fff;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #ff69b4, #da70d6);
+            border-color: #ff69b4;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+            font-weight: 700;
+        }
+
+        .price-low { border-color: rgba(0, 255, 0, 0.5); }
+        .price-low:hover { border-color: #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); }
+        
+        .price-mid { border-color: rgba(255, 165, 0, 0.5); }
+        .price-mid:hover { border-color: #ffa500; box-shadow: 0 0 15px rgba(255, 165, 0, 0.3); }
+        
+        .price-high { border-color: rgba(255, 0, 255, 0.5); }
+        .price-high:hover { border-color: #ff00ff; box-shadow: 0 0 15px rgba(255, 0, 255, 0.3); }
+
+        .color-red { border-color: rgba(255, 0, 0, 0.5); }
+        .color-red:hover { border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); }
+        
+        .color-blue { border-color: rgba(0, 100, 255, 0.5); }
+        .color-blue:hover { border-color: #0064ff; box-shadow: 0 0 15px rgba(0, 100, 255, 0.3); }
+        
+        .color-black { border-color: rgba(255, 255, 255, 0.5); }
+        .color-black:hover { border-color: #ffffff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+        
+        .color-white { border-color: rgba(200, 200, 200, 0.5); }
+        .color-white:hover { border-color: #c8c8c8; box-shadow: 0 0 15px rgba(200, 200, 200, 0.3); }
+
+        .size-btn {
+            min-width: 60px;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .table-container {
+            background: rgba(45, 27, 61, 0.8);
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .table {
+            margin: 0;
+            width: 100%;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, #ff69b4 0%, #da70d6 100%);
+        }
+
+        .table thead th {
+            color: #fff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 20px 15px;
+            border: none;
+            font-size: 1rem;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .table tbody {
+            background: transparent;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid rgba(255, 105, 180, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 105, 180, 0.05);
+        }
+
+        .table tbody td {
+            padding: 20px 15px;
+            vertical-align: middle;
+            color: #000000;
+            font-weight: 500;
+            font-size: 1.05rem;
+            border: none;
+        }
+
+        .id-cell {
+            font-weight: 700;
+            color: #ff69b4;
+            font-size: 1.1rem;
+        }
+
+        .color-badge {
+            background: rgba(255, 182, 193, 0.2);
+            border: 2px solid #ffb6c1;
+            color: #ffb6c1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .size-badge {
+            background: rgba(218, 112, 214, 0.2);
+            border: 2px solid #da70d6;
+            color: #da70d6;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .price-tag {
+            color: #ff69b4;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-update {
+            background: #da70d6;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-update:hover {
+            background: #c45fc4;
+            box-shadow: 0 0 15px rgba(218, 112, 214, 0.5);
+            color: #fff;
+        }
+
+        .btn-delete {
+            background: #ff69b4;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete:hover {
+            background: #ff1493;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: rgba(255, 105, 180, 0.3);
+        }
+
+      
+
+        @@media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .table {
+                font-size: 0.85rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .query-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header">
+            <div class="logo">
+                <i class="bi bi-bag-heart-fill"></i>
+                ELBİSE MARKET
+            </div>
+            <a href="/Elbise/Create" class="btn-add-new">
+                <i class="bi bi-plus-circle-fill"></i>
+                YENİ ELBİSE
+            </a>
+        </div>
+
+        <div class="filter-panel">
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="bi bi-tag-fill"></i>
+                    💰 FİYAT FİLTRESİ
+                </div>
+                <div class="filter-buttons">
+                    <a href="/Elbise/List" class="filter-btn @(ViewBag.CurrentFilter == null ? "active" : "")">
+                        <i class="bi bi-grid-fill"></i> Tümü
+                    </a>
+                    <a href="/Elbise/List?filter=ucuz" class="filter-btn price-low @(ViewBag.CurrentFilter == "ucuz" ? "active" : "")">
+                        <i class="bi bi-currency-dollar"></i> Ucuz (150₺ altı)
+                    </a>
+                    <a href="/Elbise/List?filter=orta" class="filter-btn price-mid @(ViewBag.CurrentFilter == "orta" ? "active" : "")">
+                        <i class="bi bi-cash-stack"></i> Orta (150-200₺)
+                    </a>
+                    <a href="/Elbise/List?filter=pahali" class="filter-btn price-high @(ViewBag.CurrentFilter == "pahali" ? "active" : "")">
+                        <i class="bi bi-gem"></i> Pahalı (200₺ üstü)
+                    </a>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="bi bi-palette-fill"></i>
+                    🎨 RENK FİLTRESİ
+                </div>
+                <div class="filter-buttons">
+                    <a href="/Elbise/List?filter=kirmizi" class="filter-btn color-red @(ViewBag.CurrentFilter == "kirmizi" ? "active" : "")">
+                        🔴 Kırmızı
+                    </a>
+                    <a href="/Elbise/List?filter=mavi" class="filter-btn color-blue @(ViewBag.CurrentFilter == "mavi" ? "active" : "")">
+                        🔵 Mavi
+                    </a>
+                    <a href="/Elbise/List?filter=siyah" class="filter-btn color-black @(ViewBag.CurrentFilter == "siyah" ? "active" : "")">
+                        ⚫ Siyah
+                    </a>
+                    <a href="/Elbise/List?filter=beyaz" class="filter-btn color-white @(ViewBag.CurrentFilter == "beyaz" ? "active" : "")">
+                        ⚪ Beyaz
+                    </a>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="bi bi-rulers"></i>
+                    📏 BEDEN FİLTRESİ
+                </div>
+                <div class="filter-buttons">
+                    <a href="/Elbise/List?filter=s" class="filter-btn size-btn @(ViewBag.CurrentFilter == "s" ? "active" : "")">
+                        S
+                    </a>
+                    <a href="/Elbise/List?filter=m" class="filter-btn size-btn @(ViewBag.CurrentFilter == "m" ? "active" : "")">
+                        M
+                    </a>
+                    <a href="/Elbise/List?filter=l" class="filter-btn size-btn @(ViewBag.CurrentFilter == "l" ? "active" : "")">
+                        L
+                    </a>
+                    <a href="/Elbise/List?filter=xl" class="filter-btn size-btn @(ViewBag.CurrentFilter == "xl" ? "active" : "")">
+                        XL
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            @if(Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-hash"></i> ID</th>
+                                <th><i class="bi bi-palette-fill"></i> RENK</th>
+                                <th><i class="bi bi-rulers"></i> BEDEN</th>
+                                <th><i class="bi bi-tag-fill"></i> FİYAT</th>
+                                <th><i class="bi bi-stars"></i> MODEL</th>
+                                <th><i class="bi bi-gear-fill"></i> İŞLEMLER</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var elbise in Model)
+                            {
+                                <tr>
+                                    <td class="id-cell">#@elbise.Id</td>
+                                    <td><span class="color-badge">@elbise.Renk</span></td>
+                                    <td><span class="size-badge">@elbise.Beden</span></td>
+                                    <td><span class="price-tag">@elbise.Fiyat ₺</span></td>
+                                    <td>@elbise.Model</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="/Elbise/Edit/@elbise.Id" class="btn-update">
+                                                <i class="bi bi-pencil-square"></i>
+                                                Güncelle
+                                            </a>
+                                            <a href="/Elbise/Delete/@elbise.Id" class="btn-delete" onclick="return confirm('Bu elbiseyi silmek istediğinizden emin misiniz?');">
+                                                <i class="bi bi-trash-fill"></i>
+                                                Sil
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h3>Henüz elbise eklenmemiş</h3>
+                    <p>Yeni bir elbise eklemek için yukarıdaki butona tıklayın</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
